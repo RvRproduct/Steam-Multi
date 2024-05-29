@@ -5,6 +5,9 @@ using Steamworks;
 using TMPro;
 using Steamworks.Data;
 using System;
+using Unity.Netcode;
+using Netcode.Transports.Facepunch;
+using UnityEngine.SceneManagement;
 
 public class SteamManager : MonoBehaviour
 {
@@ -43,6 +46,11 @@ public class SteamManager : MonoBehaviour
         LobbyID.text = lobby.Id.ToString();
         CheckUI();
 
+        if (NetworkManager.Singleton.IsHost) { return; }
+
+        NetworkManager.Singleton.gameObject.GetComponent<FacepunchTransport>().targetSteamId = lobby.Owner.Id;
+        NetworkManager.Singleton.StartClient();
+
         Debug.Log("We entered");
     }
 
@@ -52,6 +60,7 @@ public class SteamManager : MonoBehaviour
         {
             lobby.SetPublic();
             lobby.SetJoinable(true);
+            NetworkManager.Singleton.StartHost();
         }
     }
 
@@ -90,6 +99,7 @@ public class SteamManager : MonoBehaviour
     {
         LobbySaver.instance.currentLobby?.Leave();
         LobbySaver.instance.currentLobby = null;
+        NetworkManager.Singleton.Shutdown();
         CheckUI();
     }
 
@@ -104,6 +114,14 @@ public class SteamManager : MonoBehaviour
         {
             MainMenu.SetActive(false);
             InLobbyMenu.SetActive(true);
+        }
+    }
+
+    public void StartGameServer()
+    {
+        if (NetworkManager.Singleton.IsHost)
+        {
+            NetworkManager.Singleton.SceneManager.LoadScene("Gameplay", LoadSceneMode.Single);
         }
     }
 }
