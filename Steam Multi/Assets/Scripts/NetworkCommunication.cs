@@ -6,12 +6,12 @@ using Unity.Netcode;
 public class NetworkCommunication : NetworkBehaviour
 {
     CharacterController characterController;
-    Animator animator;
+    //Animator animator;
 
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
-        animator = GetComponent<Animator>();
+        //animator = GetComponent<Animator>();
     }
 
     [ServerRpc]
@@ -35,7 +35,7 @@ public class NetworkCommunication : NetworkBehaviour
     [ServerRpc]
     public void AnimatePlayerServerRPC(bool state)
     {
-        animator.SetBool("IsRunning", state);
+        //animator.SetBool("IsRunning", state);
     }
 
 

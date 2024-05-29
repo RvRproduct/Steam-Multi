@@ -42,7 +42,7 @@ public class ThirdPersonMovement : NetworkBehaviour
             controller.enabled = false;
         }
 
-        if (!IsOwner)
+        if (IsOwner)
         {
             myCamera.Priority = 100;
             
