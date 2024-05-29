@@ -26,11 +26,12 @@ public class BulletSpawner : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void SpawnBulletServerRPC(Vector3 position, Quaternion rotation)
+    private void SpawnBulletServerRPC(Vector3 position, Quaternion rotation, ServerRpcParams serverRpcParams = default)
     {
         GameObject InstansiatedBullet = Instantiate(bullet, position, rotation);
 
-        InstansiatedBullet.GetComponent<NetworkObject>().Spawn();
+        InstansiatedBullet.GetComponent<NetworkObject>().SpawnWithOwnership(serverRpcParams.Receive.SenderClientId);
+
 
     }
 }

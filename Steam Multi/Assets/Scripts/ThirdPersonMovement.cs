@@ -77,4 +77,14 @@ public class ThirdPersonMovement : NetworkBehaviour
 
         }
     }
+
+    private void OnTriggerEnter(Collider collider)
+    {
+        if (!IsServer) { return; }
+
+        if (collider.GetComponent<BulletScript>() && GetComponent<NetworkObject>().OwnerClientId != collider.GetComponent<NetworkObject>().OwnerClientId)
+        {
+            GetComponent<NetworkHealthState>().HealthPoint.Value -= 10;
+        }
+    }
 }
