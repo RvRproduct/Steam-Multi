@@ -14,6 +14,10 @@ public class SteamManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI LobbyID;
 
+    [SerializeField] private GameObject MainMenu;
+
+    [SerializeField] private GameObject InLobbyMenu;
+
     private void OnEnable()
     {
         SteamMatchmaking.OnLobbyCreated += LobbyCreated;
@@ -28,19 +32,27 @@ public class SteamManager : MonoBehaviour
         SteamFriends.OnGameLobbyJoinRequested -= GameLobbyJoinRequested;
     }
 
-    private void GameLobbyJoinRequested(Lobby lobby, SteamId id)
+    private async void GameLobbyJoinRequested(Lobby lobby, SteamId id)
     {
-        throw new NotImplementedException();
+        await lobby.Join();
     }
 
     private void LobbyEntered(Lobby lobby)
     {
-        throw new NotImplementedException();
+        LobbySaver.instance.currentLobby = lobby;
+        LobbyID.text = lobby.Id.ToString();
+        CheckUI();
+
+        Debug.Log("We entered");
     }
 
     private void LobbyCreated(Result result, Lobby lobby)
     {
-        throw new NotImplementedException();
+        if (result == Result.OK)
+        {
+            lobby.SetPublic();
+            lobby.SetJoinable(true);
+        }
     }
 
     public async void HostLobby()
@@ -66,4 +78,32 @@ public class SteamManager : MonoBehaviour
 
     }
 
+    public void CopyID()
+    {
+        TextEditor textEditor = new TextEditor();
+        textEditor.text = LobbyID.text;
+        textEditor.SelectAll();
+        textEditor.Copy();
+    }
+
+    public void LeaveLobby()
+    {
+        LobbySaver.instance.currentLobby?.Leave();
+        LobbySaver.instance.currentLobby = null;
+        CheckUI();
+    }
+
+    private void CheckUI()
+    {
+        if (LobbySaver.instance.currentLobby == null)
+        {
+            MainMenu.SetActive(true);
+            InLobbyMenu.SetActive(false);
+        }
+        else
+        {
+            MainMenu.SetActive(false);
+            InLobbyMenu.SetActive(true);
+        }
+    }
 }

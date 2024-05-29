@@ -1,18 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Steamworks.Data;
 
 public class LobbySaver : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public Lobby? currentLobby;
+
+    public static LobbySaver instance;
+
+    private void Awake()
     {
-        
+        instance = this;
+        DontDestroyOnLoad(this.gameObject);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
